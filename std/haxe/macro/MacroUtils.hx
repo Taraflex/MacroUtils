@@ -9,14 +9,13 @@ import haxe.macro.Expr;
  
 class MacroUtils
 {	
-	macro public static function toVector(array):haxe.macro.Expr {
-		
-		var s:String = (haxe.macro.Context.typeof(array).getParameters()[1][0]) + "";
-
-		s = s.split('(')[1];
-
-		s = s.split(',')[0];
-
+	macro public static function toVector(array,?type):haxe.macro.Expr {
+		var s:String = (type.expr.getParameters()[0] + '').split('CIdent(')[1].split(')')[0];
+		if (s == 'null') { 
+			s = (haxe.macro.Context.typeof(array).getParameters()[1][0]) + "";
+			s = s.split('(')[1];
+			s = s.split(',')[0];
+		}
 		var p = haxe.macro.Context.currentPos();
 			
 		return { expr : EBlock([ { expr : EVars([ { expr : { expr : ENew( { name : 'Vector', pack : [], params : [TPType(TPath( 
